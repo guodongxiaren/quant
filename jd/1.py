@@ -1,3 +1,6 @@
+'''
+	京东金融的新策略demo
+'''
 import talib
 import numpy as np
 import math
