@@ -38,6 +38,10 @@
 				<td><input type="" id="sum" name=""></td>
 			</tr>
 			<tr>
+				<td>合计(CNY)</td>
+				<td><input type="" id="sum_cny" name=""></td>
+			</tr>
+			<tr>
 				<td><input type="button" id="btn" name="" value="BUY"></td>
 			</tr>
 		</table>
@@ -141,7 +145,25 @@
 		
 		$('#stock').val(stock_fee);
 		$('#other').val(other_fee.value());
-		$('#sum').val(stock_fee + other_fee.value());
+		var sum = stock_fee + other_fee.value();
+		$('#sum').val(sum);
+
+		$.ajax({
+		    url:'https://api.fixer.io/latest',
+		    type:'GET', //POST
+		    async:true,    //或false,是否异步
+		    data:{
+		        base:'HKD',
+		        symbols:'CNY'
+		    },
+		    success:function(data) {
+		    	var exchange_rate = data['rates']['CNY'];
+		    	console.log(data['rates']['CNY']);
+		    	var sum_cny = numeral(sum).multiply(exchange_rate).value();
+		    	
+		    	$('#sum_cny').val(sum_cny.toFixed(2));
+		    }
+		});
 	});
 	
 </script>
