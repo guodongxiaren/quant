@@ -6,23 +6,42 @@
 	<meta name="viewport" content="width=device-width" />
 
 	<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/numeral.js/2.0.6/numeral.min.js"></script>
+
+	<style type="text/css">
+		.item {
+
+		}
+	</style>
 </head>
 <body>
 	<form>
 		<table>
 			<tr>
-				<td>股价</td>
+				<td>股票单价</td>
 				<td><input type="" id="price" name=""></td>
 			</tr>
 			<tr>
 				<td>数量</td>
-				<td><input type="" id="num" name=""></td>
+				<td><input type="" id="num" name="" value="100"></td>
 			</tr>
 			<tr>
-				<td><input type="button" name="" value="BUY"></td>
+				<td>股票总价</td>
+				<td><input type="" id="stock" name=""></td>
+			</tr>
+			<tr>
+				<td>交易费用</td>
+				<td><input type="" id="other" name="" value="0"></td>
+			</tr>
+			<tr>
+				<td>合计(HKD)</td>
+				<td><input type="" id="sum" name=""></td>
+			</tr>
+			<tr>
+				<td><input type="button" id="btn" name="" value="BUY"></td>
 			</tr>
 		</table>
-		<table>
+		<table id="futu">
 			<tr>
 				<td>类型</td>
 				<td>费率</td>
@@ -31,7 +50,7 @@
 				<td>实收费用</td>
 				<td>收费方</td>
 			</tr>
-			<tr id="commission">
+			<tr id="commission" class="item">
 				<td>佣金</td>
 				<td><input type="" id="rate" title="0.03%" value="0.0003" disabled></td>
 				<td><input type="" id="min" value="3" disabled></td>
@@ -39,7 +58,7 @@
 				<td><input type="" id="amount" name=""></td>
 				<td>富途证券</td>
 			</tr>
-			<tr id="platform_cost">
+			<tr id="platform_cost" class="item">
 				<td>平台使用费</td>
 				<td><input type="" id="rate" title="固定" value="0" disabled></td>
 				<td><input type="" id="min" value="15" disabled></td>
@@ -47,7 +66,7 @@
 				<td><input type="" id="amount" name="" value="15" disabled></td>
 				<td>富途证券</td>
 			</tr>
-			<tr id="system_cost">
+			<tr id="system_cost" class="item">
 				<td>交易系统使用费</td>
 				<td><input type="" id="rate" title="固定" value="0" disabled></td>
 				<td><input type="" id="min" value="0.5" disabled></td>
@@ -55,7 +74,7 @@
 				<td><input type="" id="amount" name="" value="" disabled></td>
 				<td>香港结算所</td>
 			</tr>
-			<tr id="transfer_fee">
+			<tr id="transfer_fee" class="item">
 				<td>交收费</td>
 				<td><input type="" id="rate" title="0.002%" value="0.00002" disabled></td>
 				<td><input type="" id="min" value="2" disabled></td>
@@ -63,7 +82,7 @@
 				<td><input type="" id="amount" name="" value="" disabled></td>
 				<td>香港结算所</td>
 			</tr>
-			<tr id="stamp_tax">
+			<tr id="stamp_tax" class="item">
 				<td>印花税</td>
 				<td><input type="" id="rate" title="0.1%" value="0.001" disabled></td>
 				<td><input type="" id="min" value="1" disabled></td>
@@ -71,7 +90,7 @@
 				<td><input type="" id="amount" name="" value="" disabled></td>
 				<td>香港政府</td>
 			</tr>
-			<tr id="transaction_fee">
+			<tr id="transaction_fee" class="item">
 				<td>交易费</td>
 				<td><input type="" id="rate" title="0.005%" value="0.00005" disabled></td>
 				<td><input type="" id="min" value="0.01" disabled></td>
@@ -79,7 +98,7 @@
 				<td><input type="" id="amount" name="" value="" diabled></td>
 				<td>香港交易所</td>
 			</tr>
-			<tr id="transaction_levy">
+			<tr id="transaction_levy" class="item">
 				<td>交易征费</td>
 				<td><input type="" id="rate" title="0.0027%" value="0.000027" disabled></td>
 				<td><input type="" id="min" value="0.01" disabled></td>
@@ -90,5 +109,41 @@
 		</table>
 	</form>
 
+<script type="text/javascript">
+	$('#btn').click( function() {
+		var price = numeral($('#price').val());
+		var num   = parseInt($('#num').val());
+		var stock = price.multiply(num);
+		var dif = stock.difference(100);
+		var stock_fee = stock.value();
+		console.log(stock.value());
+        console.log(price.value());
+        var other_fee = numeral(0);
+		$('.item').each(function() {
+			var fee = stock_fee;
+
+			var item = $(this).children();
+			var rate= item.children('#rate').val();
+			var min = item.children('#min').val();
+			var max = item.children('#max').val();
+            //console.log(numeral(rate).value());
+			var amount = numeral(fee).multiply(rate);
+			console.log(amount.value());
+			var amt = amount.value();
+			if (amt < parseFloat(min)) {
+				amt = parseFloat(min);
+			}
+			item.children('#amount').val(amt);
+			other_fee.add(amt);
+			//console.log(min);
+		});
+
+		
+		$('#stock').val(stock_fee);
+		$('#other').val(other_fee.value());
+		$('#sum').val(stock_fee + other_fee.value());
+	});
+	
+</script>
 </body>
 </html>
