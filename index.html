@@ -18,6 +18,13 @@
 	<form>
 		<table>
 			<tr>
+				<td>
+					<input type="radio" id="package" name="package" value="old" checked /> 旧套餐
+					<input type="radio" id="package" name="package" value="new1" /> 新套餐一
+					<input type="radio" id="package" name="package" value="new2" /> 新套餐二
+				</td>
+			</tr>
+			<tr>
 				<td>股票单价</td>
 				<td><input type="" id="price" name=""></td>
 			</tr>
@@ -46,19 +53,14 @@
 			</tr>
 			<tr>
 				<td>
-				<input type="radio" id="no_com" name="no_com" value="yes" checked="checked" /> 免佣
-				<input type="radio" id="no_com" name="no_com" value="no" /> 不免
+					<input type="radio" id="no_com" name="no_com" value="yes" checked /> 免佣
+					<input type="radio" id="no_com" name="no_com" value="no" /> 不免
 			    </td>
 			</tr>
 			<tr>
-				<input type="radio" id="package" name="package" value="old" checked="checked" /> 旧套餐
-				<input type="radio" id="package" name="package" value="new1" /> 新套餐一
-				<input type="radio" id="package" name="package" value="new2" /> 新套餐二
-			</tr>
-			<tr>
 				<td>
-				<input type="radio" id="order" name="order" value="buy"  /> 买入
-				<input type="radio" id="order" name="order" value="sell" checked="checked" /> 卖出
+					<input type="radio" id="order" name="order" value="buy"  checked/> 买入
+					<input type="radio" id="order" name="order" value="sell" /> 卖出
 			    </td>
 			</tr>
 		</table>
@@ -164,26 +166,25 @@
 				amt = 0;
 			} else if (this.id == 'stamp_tax') {
 				amt = Math.ceil(amt);
-			} else if (this.id == 'platform_cost' && $('#package').val() == 'old') {
+			} else if (this.id == 'platform_cost' && $('#package:checked').val() == 'old') {
 				amt = 0;
-			} else if (this.id == 'system_cost' && $('#package').val() == 'old') {
+			} else if (this.id == 'system_cost' && $('#package:checked').val() == 'old') {
 				amt = 0;
 			} 
 			item.children('#amount').val(amt);
-			console.log($('#order').val())
-			if ($('#order').val() == 'sell') {
-				console.log("fuck")
-				other_fee.sub(amt);
-			} else {
-				other_fee.add(amt);
-			}
+			console.log($('#order:checked').val())
+			other_fee.add(amt);
 			
 		});
 
 		
 		$('#stock').val(stock_fee);
 		$('#other').val(other_fee.value());
-		var sum = stock_fee + other_fee.value();
+		if ($('#order:checked').val() == 'sell') {
+			var sum = stock_fee - other_fee.value();
+		} else {
+			var sum = stock_fee + other_fee.value();
+		}
 		$('#sum').val(sum);
 
 		$.ajax({
