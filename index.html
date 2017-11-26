@@ -133,6 +133,16 @@
 	</form>
 
 <script type="text/javascript">
+	function sheru(digit) {
+		if ((digit * 1000) % 10 == 5) {
+			digit = Math.ceil(digit*100)/100;
+		} else {
+			digit = Math.round(digit*100)/100;
+		}
+		
+		return digit;
+	}
+
 	$('#btn').click( function() {
 		var price = numeral($('#price').val());
 		var num   = parseInt($('#num').val());
@@ -161,7 +171,8 @@
 			{
 				amt = parseFloat(max);
 			}
-			amt = Math.round(amt*100)/100
+
+			amt = sheru(amt); 
 			if (this.id == 'commission' && $('#no_com').val() == 'yes') {
 				amt = 0;
 			} else if (this.id == 'stamp_tax') {
