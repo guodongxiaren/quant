@@ -42,7 +42,24 @@
 				<td><input type="" id="sum_cny" name=""></td>
 			</tr>
 			<tr>
-				<td><input type="button" id="btn" name="" value="BUY"></td>
+				<td><input type="button" id="btn" name="" value="计算"></td>
+			</tr>
+			<tr>
+				<td>
+				<input type="radio" id="no_com" name="no_com" value="yes" checked="checked" /> 免佣
+				<input type="radio" id="no_com" name="no_com" value="no" /> 不免
+			    </td>
+			</tr>
+			<tr>
+				<input type="radio" id="package" name="package" value="old" checked="checked" /> 旧套餐
+				<input type="radio" id="package" name="package" value="new1" /> 新套餐一
+				<input type="radio" id="package" name="package" value="new2" /> 新套餐二
+			</tr>
+			<tr>
+				<td>
+				<input type="radio" id="order" name="order" value="buy"  /> 买入
+				<input type="radio" id="order" name="order" value="sell" checked="checked" /> 卖出
+			    </td>
 			</tr>
 		</table>
 		<table id="futu">
@@ -80,9 +97,9 @@
 			</tr>
 			<tr id="transfer_fee" class="item">
 				<td>交收费</td>
-				<td><input type="" id="rate" title="0.002%" value="0.00002" disabled></td>
-				<td><input type="" id="min" value="2" disabled></td>
-				<td><input type="" id="max" value="100" disabled></td>
+				<td><input type="" id="rate" title="0.005%" value="0.00002" disabled></td>
+				<td><input type="" id="min" value="5.5" disabled></td>
+				<td><input type="" id="max" value="200" disabled></td>
 				<td><input type="" id="amount" name="" value="" disabled></td>
 				<td>香港结算所</td>
 			</tr>
@@ -132,14 +149,35 @@
 			var max = item.children('#max').val();
             //console.log(numeral(rate).value());
 			var amount = numeral(fee).multiply(rate);
+			console.log(this.id);
 			console.log(amount.value());
 			var amt = amount.value();
 			if (amt < parseFloat(min)) {
 				amt = parseFloat(min);
 			}
+			if (max != '-' && amt > parseFloat(max))
+			{
+				amt = parseFloat(max);
+			}
+			amt = Math.round(amt*100)/100
+			if (this.id == 'commission' && $('#no_com').val() == 'yes') {
+				amt = 0;
+			} else if (this.id == 'stamp_tax') {
+				amt = Math.ceil(amt);
+			} else if (this.id == 'platform_cost' && $('#package').val() == 'old') {
+				amt = 0;
+			} else if (this.id == 'system_cost' && $('#package').val() == 'old') {
+				amt = 0;
+			} 
 			item.children('#amount').val(amt);
-			other_fee.add(amt);
-			//console.log(min);
+			console.log($('#order').val())
+			if ($('#order').val() == 'sell') {
+				console.log("fuck")
+				other_fee.sub(amt);
+			} else {
+				other_fee.add(amt);
+			}
+			
 		});
 
 		
